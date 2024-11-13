@@ -47,4 +47,8 @@
   "engines": {
     "node": ">=18.0.0"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f903275 (Create a new Hydrogen project)
