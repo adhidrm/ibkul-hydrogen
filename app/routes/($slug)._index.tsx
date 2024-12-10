@@ -80,7 +80,7 @@ export default function Page() {
 	return (
 		<body title="Builder.io Preview page">
 		  {/* <builder-component name="{model}" api-key={builderPublicKey}></builder-component> */}
-		  <Content model="headless-page" apiKey={apiKey} content={page as BuilderContent} />
+		  <div><Content model="headless-page" apiKey={apiKey} content={page as BuilderContent} /></div>
 		  <script src="https://cdn.builder.io/js/webcomponents" async></script>
 		</body>
 	  );
