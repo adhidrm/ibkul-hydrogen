@@ -72,7 +72,7 @@ export default function Page() {
 	
   
 	// Render the page content from Builder.io
-	// default way
+	// default process
 	// return <Content model="headless-page" apiKey={apiKey} content={page} />;
 
 	// Test call page as BuilderContent
