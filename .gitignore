@@ -7,6 +7,5 @@ node_modules
 .env
 .shopify
 /.history
-/.github
 /.npmrc
 .gitignore
