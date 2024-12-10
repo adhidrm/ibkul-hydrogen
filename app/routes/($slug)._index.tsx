@@ -76,7 +76,14 @@ export default function Page() {
 	// return <Content model="headless-page" apiKey={apiKey} content={page} />;
 
 	// Test call page as BuilderContent
-	return <Content model="headless-page" apiKey={apiKey} content={page as BuilderContent} />;
+	// return <Content model="headless-page" apiKey={apiKey} content={page as BuilderContent} />;
+	return (
+		<body title="Builder.io Preview page">
+		  {/* <builder-component name="{model}" api-key={builderPublicKey}></builder-component> */}
+		  <Content model="headless-page" apiKey={apiKey} content={page as BuilderContent} />
+		  <script src="https://cdn.builder.io/js/webcomponents" async></script>
+		</body>
+	  );
 
   	// Render the page content from Builder.io using components test
 	// return <Content model="headless-page" apiKey={apiKey} content={page} linkComponent={LinkComponent} />;
