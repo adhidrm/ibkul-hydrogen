@@ -25,9 +25,10 @@ export default async function handleRequest(
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
     scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
     fontSrc: ['https://fonts.gstatic.com/'], 
+    scriptNonce: nonce,
   });
   // Add the nonce to the scriptSrcElem array
-  scriptSrcElem.push(`nonce-${nonce}`);
+  // scriptSrcElem.push(`nonce-${nonce}`);
   
   const body = await renderToReadableStream(
     <NonceProvider>
