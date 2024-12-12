@@ -23,7 +23,8 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
-    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
+    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com', `nonce-${nonce}`],
+    fontSrc: ['https://fonts.gstatic.com/'], 
   });
 
   const body = await renderToReadableStream(
