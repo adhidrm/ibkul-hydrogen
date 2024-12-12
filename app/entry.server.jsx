@@ -22,7 +22,8 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    imgSrc: ['https://cdn.builder.io']
+    imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
+    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
   });
 
   const body = await renderToReadableStream(
