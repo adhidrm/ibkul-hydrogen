@@ -23,11 +23,11 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
-    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com', 'unsafe-inline'],
+    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
     fontSrc: ['https://fonts.gstatic.com/'], 
   });
   // Add the nonce to the scriptSrcElem array
-  // scriptSrcElem.push(`nonce-${nonce}`);
+  scriptSrcElem.push(`nonce-${nonce}`);
   
   const body = await renderToReadableStream(
     <NonceProvider>
