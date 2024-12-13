@@ -22,8 +22,16 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    defaultSrc: ["'self'"],  // Add this
+    connectSrc: ["'self'", 'https://cdn.builder.io', 'https://cdn.shopify.com'],  // Add this
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
-    scriptSrcElem: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
+    scriptSrcElem: [
+      "'self'",
+      'https://cdn.builder.io', 
+      'https://cdn.shopify.com',
+      `'nonce-${nonce}'`
+    ],
+    styleSrc: ["'self'", "'unsafe-inline'"],
     fontSrc: ['https://fonts.gstatic.com/'], 
     // scriptNonce: nonce,
   });
