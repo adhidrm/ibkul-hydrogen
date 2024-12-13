@@ -2,6 +2,15 @@ import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import {createHash} from 'crypto';
+
+// Add hash generator function
+function generateCSPHash(content) {
+  const hash = createHash('sha256')
+    .update(content)
+    .digest('base64');
+  return `'sha256-${hash}'`;
+}
 
 /**
  * @param {Request} request
@@ -17,6 +26,12 @@ export default async function handleRequest(
   remixContext,
   context,
 ) {
+  // Get your dynamic script content from RemixServer
+  const dynamicContent = await renderToString(
+    <RemixServer context={remixContext} url={request.url} />
+  );    
+  const scriptHash = generateCSPHash(dynamicContent);
+
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
@@ -29,14 +44,11 @@ export default async function handleRequest(
       "'self'",
       'https://cdn.builder.io', 
       'https://cdn.shopify.com',
-      `'nonce-${nonce}'`
+      scriptHash, // Add dynamic hash
     ],
     styleSrc: ["'self'", "'unsafe-inline'"],
     fontSrc: ['https://fonts.gstatic.com/'], 
-    // scriptNonce: nonce,
   });
-  // Add the nonce to the scriptSrcElem array
-  // scriptSrcElem.push(`nonce-${nonce}`);
   
   const body = await renderToReadableStream(
     <NonceProvider>
