@@ -1,7 +1,7 @@
-import { RemixServer } from '@remix-run/react';
+import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
-import { renderToReadableStream, renderToString } from 'react-dom/server';
-import { createContentSecurityPolicy } from '@shopify/hydrogen';
+import {renderToReadableStream, renderToString} from 'react-dom/server';
+import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
 // Function to generate a secure nonce
 const generateNonce = () => {
@@ -27,7 +27,7 @@ export default async function handleRequest(
   // Generate a nonce
   const nonce = generateNonce();
 
-  const { header, NonceProvider } = createContentSecurityPolicy({
+  const {header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
@@ -37,9 +37,9 @@ export default async function handleRequest(
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
     scriptSrcElem: [
       "'self'",
-      'https://cdn.builder.io',
+      'https://cdn.builder.io', 
       'https://cdn.shopify.com',
-      `'nonce-${nonce}'`, // Correct nonce usage
+      `'nonce-${nonce}'`,  // Correct nonce usage
     ],
     styleSrc: ["'self'", "'unsafe-inline'"],
     fontSrc: ['https://fonts.gstatic.com/'],
@@ -67,23 +67,7 @@ export default async function handleRequest(
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
 
-  // Create a HTML template with nonce for inline scripts
-  const htmlTemplate = `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <script nonce="${nonce}">/* Your inline script here */</script>
-      </head>
-      <body>
-        <!-- Your body content here -->
-      </body>
-    </html>
-  `;
-
-  return new Response(htmlTemplate, {
+  return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,
   });
