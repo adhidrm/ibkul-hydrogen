@@ -2,14 +2,13 @@ import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
-import {createHash} from 'crypto';
+import sha256 from 'js-sha256';
 
 // Add hash generator function
 function generateCSPHash(content) {
-  const hash = createHash('sha256')
-    .update(content)
-    .digest('base64');
-  return `'sha256-${hash}'`;
+  const hash = sha256.create();
+  hash.update(content);
+  return `'sha256-${hash.hex()}'`;
 }
 
 /**
