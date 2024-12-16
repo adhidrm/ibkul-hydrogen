@@ -1,15 +1,14 @@
 import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
-import {renderToReadableStream} from 'react-dom/server';
+import {renderToReadableStream, renderToString} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
-import sha256 from 'js-sha256';
 
-// Add hash generator function
-function generateCSPHash(content) {
-  const hash = sha256.create();
-  hash.update(content);
-  return `'sha256-${hash.hex()}'`;
-}
+// Function to generate a secure nonce
+const generateNonce = () => {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return btoa(String.fromCharCode.apply(null, array));
+};
 
 /**
  * @param {Request} request
@@ -25,30 +24,27 @@ export default async function handleRequest(
   remixContext,
   context,
 ) {
-  // Get your dynamic script content from RemixServer
-  const dynamicContent = await renderToString(
-    <RemixServer context={remixContext} url={request.url} />
-  );    
-  const scriptHash = generateCSPHash(dynamicContent);
+  // Generate a nonce
+  const nonce = generateNonce();
 
-  const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+  const {header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    defaultSrc: ["'self'"],  // Add this
-    connectSrc: ["'self'", 'https://cdn.builder.io', 'https://cdn.shopify.com'],  // Add this
+    defaultSrc: ["'self'"],
+    connectSrc: ["'self'", 'https://cdn.builder.io', 'https://cdn.shopify.com'],
     imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
     scriptSrcElem: [
       "'self'",
       'https://cdn.builder.io', 
       'https://cdn.shopify.com',
-      scriptHash, // Add dynamic hash
+      `'nonce-${nonce}'`,  // Correct nonce usage
     ],
     styleSrc: ["'self'", "'unsafe-inline'"],
-    fontSrc: ['https://fonts.gstatic.com/'], 
+    fontSrc: ['https://fonts.gstatic.com/'],
   });
-  
+
   const body = await renderToReadableStream(
     <NonceProvider>
       <RemixServer context={remixContext} url={request.url} />
