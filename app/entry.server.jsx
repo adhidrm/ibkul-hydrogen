@@ -1,14 +1,7 @@
-import {RemixServer} from '@remix-run/react';
+import { RemixServer } from '@remix-run/react';
 import isbot from 'isbot';
-import {renderToReadableStream, renderToString} from 'react-dom/server';
-import {createContentSecurityPolicy} from '@shopify/hydrogen';
-
-// Function to generate a secure nonce
-const generateNonce = () => {
-  const array = new Uint8Array(16);
-  crypto.getRandomValues(array);
-  return btoa(String.fromCharCode.apply(null, array));
-};
+import { renderToReadableStream } from 'react-dom/server';
+import { createContentSecurityPolicy } from '@shopify/hydrogen';
 
 /**
  * @param {Request} request
@@ -22,27 +15,22 @@ export default async function handleRequest(
   responseStatusCode,
   responseHeaders,
   remixContext,
-  context,
+  context
 ) {
-  // Generate a nonce
-  const nonce = generateNonce();
-
-  const {header, NonceProvider} = createContentSecurityPolicy({
+  const { nonce, header, NonceProvider } = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    defaultSrc: ["'self'"],
-    connectSrc: ["'self'", 'https://cdn.builder.io', 'https://cdn.shopify.com'],
-    imgSrc: ['https://cdn.builder.io', 'https://cdn.shopify.com'],
-    scriptSrcElem: [
-      "'self'",
-      'https://cdn.builder.io', 
-      'https://cdn.shopify.com',
-      `'nonce-${nonce}'`,  // Correct nonce usage
-    ],
-    styleSrc: ["'self'", "'unsafe-inline'"],
-    fontSrc: ['https://fonts.gstatic.com/'],
+    // Add Builder.io domains to the CSP policy
+    customDirectives: {
+      scriptSrc: ["'self'", "https://cdn.builder.io"],
+      styleSrc: ["'self'", "https://cdn.builder.io", "'unsafe-inline'"],
+      imgSrc: ["'self'", "https://cdn.builder.io"],
+      connectSrc: ["'self'", "https://cdn.builder.io"],
+      fontSrc: ["'self'", "https://cdn.builder.io"],
+      // Add any additional domains or sources as necessary
+    }
   });
 
   const body = await renderToReadableStream(
@@ -57,7 +45,7 @@ export default async function handleRequest(
         console.error(error);
         responseStatusCode = 500;
       },
-    },
+    }
   );
 
   if (isbot(request.headers.get('user-agent'))) {
