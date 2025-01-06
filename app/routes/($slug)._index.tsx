@@ -58,7 +58,7 @@ export default function Page() {
 	console.log('Page data:', page);
 	console.log('Page type:', typeof page);
 	console.log('Is page null?', page === null);
-	console.log('Page structure:', JSON.stringify(page, null, 2));
+	
   
   
 	if (!page || !page.data) {
